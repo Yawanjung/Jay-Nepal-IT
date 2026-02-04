@@ -1,0 +1,170 @@
+/*Copyright (c) 2026 Yawan Sinjali Magar
+All rights reserved.
+Unauthorized use or distribution is prohibited.*/
+
+
+/* ===== Base Reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f4f7f4;
+    color: #1f2d1f;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== Header ===== */
+.top-branding {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #064b2a 75%, #DC143C 100%);
+    color: #fff;
+    text-align: center;
+    padding: 16px 12px;
+    border-bottom: 3px solid #DC143C;
+    z-index: 1000;
+}
+
+.logo-container { margin-bottom: 6px; }
+.main-logo { height: 60px; width: auto; }
+.top-branding h1 { font-size: 1.7rem; margin-bottom: 2px; }
+.tagline { font-size: 0.8rem; opacity: 0.9; }
+
+/* ===== Navbar ===== */
+.navbar {
+    position: sticky;
+    top: 90px; /* header height */
+    background-color: #043d22;
+    border-top: 3px solid #DC143C;
+    z-index: 999;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.navbar li { border-left: 1px solid rgba(255,255,255,0.15); }
+.navbar li:first-child { border-left: none; }
+
+.navbar a {
+    display: block;
+    padding: 10px 16px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.navbar a:hover { background-color: #DC143C; }
+
+/* ===== Main Content ===== */
+.main-content {
+    flex: 1 0 auto;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+/* ===== Sections ===== */
+/* hide all sections by default */
+.main-content section {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border-top: 4px solid #DC143C;
+}
+
+/* show section when targeted via anchor */
+.main-content section:target {
+    display: block;
+}
+
+/* show home section by default */
+.main-content section#home {
+    display: block;
+}
+
+section h2 {
+    color: #064b2a;
+    margin-bottom: 8px;
+    padding-left: 10px;
+    border-left: 5px solid #DC143C;
+    font-size: 1.3rem;
+}
+
+section p {
+    font-size: 0.95rem;
+}
+
+/* ===== Footer ===== */
+footer {
+    flex-shrink: 0;
+    background-color: #043d22;
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    font-size: 0.8rem;
+    border-top: 3px solid #DC143C;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 600px) {
+    .main-logo { height: 50px; }
+    .top-branding h1 { font-size: 1.4rem; }
+    .tagline { font-size: 0.75rem; }
+    .navbar ul { flex-direction: column; }
+    .navbar li { border-left: none; border-top: 1px solid rgba(255,255,255,0.15); }
+    .navbar a { text-align: center; padding: 10px; }
+    .main-content { margin: 15px; padding: 16px; }
+    section h2 { font-size: 1.15rem; }
+}
+
+/* ===== Tablet ===== */
+@media (min-width: 601px) and (max-width: 900px) {
+    .main-logo { height: 55px; }
+    .top-branding h1 { font-size: 1.6rem; }
+    .main-content { margin: 20px; }
+}
+
+
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #064b2a;
+    color: #fff;
+    padding: 8px;
+    z-index: 10000;
+    text-decoration: none;
+}
+.skip-link:focus {
+    top: 0;
+}
+
+
+/* ===== Focus Styles for Accessibility ===== */
+a:focus {
+    outline: 3px solid #DC143C; /* लाल–हरियो contrast रंग */
+    outline-offset: 2px;        /* link बाट थोरै अलग */
+}
+button:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid #DC143C;
+    outline-offset: 2px;
+}
+
+
