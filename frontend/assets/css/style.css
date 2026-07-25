@@ -1,0 +1,1027 @@
+/* =========================================================
+   Jay Nepal IT प्रविधि — डिजाइन टोकनहरू (Design Tokens)
+   ========================================================= */
+:root {
+  /* रङ प्यालेट: गाढा टिल/निलो-हरियो + सुन्तला + सेतो */
+  --jn-teal-950: #07282a;
+  --jn-teal-900: #0b3638;
+  --jn-teal-800: #114a4c;
+  --jn-teal-700: #175f61;
+  --jn-teal-600: #1f7a7d;
+  --jn-teal-100: #e2f0ef;
+
+  --jn-orange-600: #d4661f;
+  --jn-orange-500: #e8772e;
+  --jn-orange-400: #f2924f;
+  --jn-orange-100: #fdeadb;
+
+  --jn-white: #ffffff;
+  --jn-paper: #f6f8f7;
+  --jn-ink: #10221f;
+  --jn-ink-soft: #3c504d;
+  --jn-line: #d9e3e1;
+
+  --jn-focus-ring: #f2924f;
+
+  --jn-font-display: "Baloo 2", "Noto Sans Devanagari", sans-serif;
+  --jn-font-body: "Hind", "Noto Sans Devanagari", sans-serif;
+
+  --jn-radius: 14px;
+  --jn-shadow-sm: 0 2px 8px rgba(7, 40, 42, 0.08);
+  --jn-shadow-md: 0 10px 30px rgba(7, 40, 42, 0.12);
+}
+
+/* =========================================================
+   आधारभूत रिसेट र टाइपोग्राफी
+   ========================================================= */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+body {
+  font-family: var(--jn-font-body);
+  color: var(--jn-ink);
+  background-color: var(--jn-paper);
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, .jn-display {
+  font-family: var(--jn-font-display);
+  font-weight: 700;
+  color: var(--jn-teal-950);
+}
+
+a { color: var(--jn-teal-700); }
+a:hover { color: var(--jn-orange-600); }
+
+/* किबोर्ड फोकस रिङ — WCAG 2.1 AA अनुसार स्पष्ट देखिने */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+.nav-link:focus-visible {
+  outline: 3px solid var(--jn-focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Skip link — स्क्रिन रिडर/किबोर्ड प्रयोगकर्ताका लागि */
+.jn-skip-link {
+  position: absolute;
+  top: -60px;
+  left: 1rem;
+  z-index: 1050;
+  background: var(--jn-orange-500);
+  color: var(--jn-white);
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 0 8px 8px;
+  font-weight: 600;
+  transition: top 0.2s ease;
+}
+.jn-skip-link:focus {
+  top: 0;
+  color: var(--jn-white);
+}
+
+/* =========================================================
+   हेडर / नेभिगेसन
+   ========================================================= */
+.jn-header {
+  background-color: var(--jn-teal-950);
+}
+
+.jn-navbar .navbar-brand {
+  font-family: var(--jn-font-display);
+  font-weight: 800;
+  color: var(--jn-white);
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.jn-navbar .navbar-brand .jn-brand-accent { color: var(--jn-orange-400); }
+
+.jn-navbar .nav-link {
+  color: var(--jn-teal-100);
+  font-weight: 600;
+  padding: 0.6rem 1rem !important;
+}
+.jn-navbar .nav-link:hover,
+.jn-navbar .nav-link:focus {
+  color: var(--jn-white);
+}
+.jn-navbar .nav-link.active {
+  color: var(--jn-white);
+  border-bottom: 2px solid var(--jn-orange-500);
+}
+
+.jn-navbar .navbar-toggler {
+  border-color: var(--jn-teal-600);
+}
+.jn-navbar .navbar-toggler-icon {
+  filter: invert(1);
+}
+
+.jn-btn-cta {
+  background-color: var(--jn-orange-500);
+  border-color: var(--jn-orange-500);
+  color: var(--jn-white);
+  font-weight: 700;
+}
+.jn-btn-cta:hover,
+.jn-btn-cta:focus {
+  background-color: var(--jn-orange-600);
+  border-color: var(--jn-orange-600);
+  color: var(--jn-white);
+}
+
+.jn-btn-outline-light {
+  border: 2px solid var(--jn-teal-100);
+  color: var(--jn-white);
+  font-weight: 700;
+}
+.jn-btn-outline-light:hover,
+.jn-btn-outline-light:focus {
+  background-color: var(--jn-white);
+  color: var(--jn-teal-950);
+}
+
+/* =========================================================
+   हिरो सेक्सन — बाटो/यात्रा मोटिफ
+   ========================================================= */
+.jn-hero {
+  background: linear-gradient(180deg, var(--jn-teal-950) 0%, var(--jn-teal-900) 65%, var(--jn-teal-800) 100%);
+  color: var(--jn-white);
+  padding-block: 4.5rem 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.jn-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(232, 119, 46, 0.16);
+  border: 1px solid var(--jn-orange-400);
+  color: var(--jn-orange-100);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+
+.jn-hero h1 {
+  color: var(--jn-white);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  line-height: 1.25;
+}
+
+.jn-hero p.lead {
+  color: var(--jn-teal-100);
+  max-width: 46rem;
+  font-size: 1.15rem;
+}
+
+.jn-hero-stats {
+  border-top: 1px solid rgba(255,255,255,0.16);
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+}
+.jn-hero-stats dt {
+  font-family: var(--jn-font-display);
+  color: var(--jn-orange-400);
+  font-size: 2rem;
+  font-weight: 800;
+}
+.jn-hero-stats dd {
+  color: var(--jn-teal-100);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+/* =========================================================
+   रोडम्याप बोर्ड — ठाडो यात्रा-स्पाइन (Signature element)
+   ========================================================= */
+.jn-section {
+  padding-block: 4rem;
+}
+.jn-section-title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 0.5rem;
+}
+.jn-section-subtitle {
+  color: var(--jn-ink-soft);
+  max-width: 42rem;
+}
+
+.jn-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 2.5rem;
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  background: var(--jn-white);
+  padding: 1rem 1.25rem;
+}
+.jn-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--jn-ink-soft);
+}
+.jn-legend-dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.jn-status-planned .jn-legend-dot,
+.jn-badge-planned { background-color: var(--jn-teal-600); }
+.jn-status-progress .jn-legend-dot,
+.jn-badge-progress { background-color: var(--jn-orange-500); }
+.jn-status-testing .jn-legend-dot,
+.jn-badge-testing { background-color: #c99a2e; }
+.jn-status-active .jn-legend-dot,
+.jn-badge-active { background-color: #2f8f5b; }
+.jn-status-archived .jn-legend-dot,
+.jn-badge-archived { background-color: #7a8783; }
+
+/* ठाडो स्पाइन */
+.jn-roadmap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+.jn-roadmap-list::before {
+  content: "";
+  position: absolute;
+  left: 0.55rem;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 3px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--jn-line) 0 8px,
+    transparent 8px 14px
+  );
+}
+.jn-roadmap-item {
+  position: relative;
+  padding-left: 2.75rem;
+  padding-bottom: 2rem;
+}
+.jn-roadmap-item:last-child { padding-bottom: 0; }
+
+.jn-roadmap-node {
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 3px solid var(--jn-white);
+  box-shadow: 0 0 0 2px var(--jn-line);
+}
+
+.jn-roadmap-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--jn-shadow-sm);
+}
+
+.jn-badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--jn-white);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+
+.jn-roadmap-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+.jn-roadmap-card p {
+  color: var(--jn-ink-soft);
+  margin-bottom: 0.5rem;
+  font-size: 0.96rem;
+}
+.jn-roadmap-meta {
+  font-size: 0.82rem;
+  color: var(--jn-ink-soft);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.jn-roadmap-loading,
+.jn-roadmap-empty {
+  background: var(--jn-white);
+  border: 1px dashed var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 2rem;
+  text-align: center;
+  color: var(--jn-ink-soft);
+}
+
+/* प्राथमिकता ब्याज (Priority) */
+.jn-priority-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+.jn-priority-low { color: var(--jn-teal-700); background: var(--jn-teal-100); border-color: var(--jn-teal-600); }
+.jn-priority-medium { color: #8a5a00; background: #fdf1d6; border-color: #c99a2e; }
+.jn-priority-high { color: var(--jn-orange-600); background: var(--jn-orange-100); border-color: var(--jn-orange-500); }
+.jn-priority-critical { color: #7a1f2b; background: #fbe1e4; border-color: #b23a47; }
+
+/* प्रगति पट्टी (Progress bar) */
+.jn-progress-wrap {
+  margin: 0.6rem 0;
+}
+.jn-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--jn-ink-soft);
+  margin-bottom: 0.25rem;
+}
+.jn-progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--jn-line);
+  overflow: hidden;
+}
+.jn-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--jn-orange-500);
+}
+
+/* माइलस्टोन चेकलिस्ट (रोडम्याप कार्ड भित्र) */
+.jn-roadmap-milestones {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  color: var(--jn-ink-soft);
+}
+.jn-roadmap-milestones li[data-status="completed"] {
+  color: var(--jn-ink);
+  text-decoration: line-through;
+  text-decoration-color: var(--jn-line);
+}
+
+.jn-roadmap-target-release {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--jn-teal-700);
+  font-weight: 600;
+}
+
+/* =========================================================
+   सुविधा/परियोजना कार्डहरू
+   ========================================================= */
+.jn-feature-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.75rem;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.jn-feature-card:hover,
+.jn-feature-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--jn-shadow-md);
+}
+.jn-feature-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 12px;
+  background: var(--jn-teal-100);
+  color: var(--jn-teal-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.jn-feature-card h3 { font-size: 1.15rem; }
+.jn-feature-card p { color: var(--jn-ink-soft); }
+
+/* =========================================================
+   समाचार प्रिभ्यु
+   ========================================================= */
+.jn-news-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  overflow: hidden;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+}
+.jn-news-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--jn-orange-600);
+  background: var(--jn-orange-100);
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+.jn-news-card .card-body h3 { font-size: 1.05rem; }
+.jn-news-card time {
+  color: var(--jn-ink-soft);
+  font-size: 0.82rem;
+}
+
+/* =========================================================
+   सदस्यता (Subscribe) फारम
+   ========================================================= */
+.jn-subscribe {
+  background: var(--jn-teal-100);
+  border-radius: var(--jn-radius);
+  padding: 2.5rem;
+}
+.jn-subscribe .form-label {
+  font-weight: 600;
+  color: var(--jn-teal-950);
+}
+.jn-subscribe .form-control {
+  border: 1px solid var(--jn-line);
+  padding: 0.7rem 1rem;
+}
+.jn-subscribe .form-control.is-invalid {
+  border-color: #c0392b;
+}
+.jn-subscribe .invalid-feedback {
+  color: #c0392b;
+  font-weight: 600;
+}
+.jn-form-status[data-state="success"] {
+  color: #2f8f5b;
+  font-weight: 700;
+}
+.jn-form-status[data-state="error"] {
+  color: #c0392b;
+  font-weight: 700;
+}
+
+/* =========================================================
+   फुटर
+   ========================================================= */
+.jn-footer {
+  background-color: var(--jn-teal-950);
+  color: var(--jn-teal-100);
+  padding-block: 2.5rem;
+}
+.jn-footer a {
+  color: var(--jn-teal-100);
+}
+.jn-footer a:hover,
+.jn-footer a:focus {
+  color: var(--jn-orange-400);
+}
+.jn-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--jn-teal-600);
+  border-radius: 50%;
+  margin-inline-end: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .jn-section { padding-block: 3rem; }
+  .jn-hero { padding-block: 3rem 4rem; }
+}
+
+/* =========================================================
+   भित्री-पेज हेडर ब्यानर (About / Projects / News / Login)
+   ========================================================= */
+.jn-page-header {
+  background: linear-gradient(180deg, var(--jn-teal-950) 0%, var(--jn-teal-800) 100%);
+  color: var(--jn-white);
+  padding-block: 3rem;
+}
+.jn-page-header h1 {
+  color: var(--jn-white);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  margin-bottom: 0.5rem;
+}
+.jn-page-header p {
+  color: var(--jn-teal-100);
+  max-width: 40rem;
+  margin-bottom: 0;
+}
+.jn-breadcrumb {
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--jn-teal-100);
+}
+.jn-breadcrumb a { color: var(--jn-teal-100); }
+.jn-breadcrumb a:hover, .jn-breadcrumb a:focus { color: var(--jn-orange-400); }
+.jn-breadcrumb li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.5rem;
+  color: var(--jn-teal-600);
+}
+
+/* =========================================================
+   About — कम्पनी परिचय / मिसन
+   ========================================================= */
+.jn-intro-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.75rem;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+}
+.jn-intro-card h2 { font-size: 1.25rem; }
+.jn-intro-card p { color: var(--jn-ink-soft); margin-bottom: 0; }
+
+/* टोली (Team) */
+.jn-team-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+}
+.jn-avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: var(--jn-teal-100);
+  color: var(--jn-teal-800);
+  font-family: var(--jn-font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.jn-team-card h3 { font-size: 1.05rem; margin-bottom: 0.15rem; }
+.jn-team-card .jn-role {
+  color: var(--jn-orange-600);
+  font-weight: 600;
+  font-size: 0.88rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.jn-team-card p.jn-bio { color: var(--jn-ink-soft); font-size: 0.92rem; margin-bottom: 0; }
+
+.jn-avatar-img {
+  object-fit: cover;
+  border: 2px solid var(--jn-teal-100);
+}
+
+.jn-portfolio-link {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--jn-teal-700);
+}
+.jn-portfolio-link:hover,
+.jn-portfolio-link:focus-visible {
+  color: var(--jn-orange-600);
+}
+
+/* कम्पनीका मूल्यहरू (Values) */
+.jn-value-card {
+  background: var(--jn-teal-100);
+  border-radius: var(--jn-radius);
+  padding: 1.5rem;
+  height: 100%;
+}
+.jn-value-card h3 {
+  font-size: 1.05rem;
+  color: var(--jn-teal-950);
+  margin-bottom: 0.4rem;
+}
+.jn-value-card p { color: var(--jn-ink-soft); margin-bottom: 0; font-size: 0.92rem; }
+
+/* =========================================================
+   Projects — श्रेणी ट्याग र प्रोजेक्ट कार्ड
+   ========================================================= */
+.jn-tag-software,
+.jn-legend-dot.jn-tag-software { background-color: var(--jn-teal-600); }
+.jn-tag-mobile,
+.jn-legend-dot.jn-tag-mobile { background-color: var(--jn-orange-500); }
+.jn-tag-webportal,
+.jn-legend-dot.jn-tag-webportal { background-color: #2f6f8f; }
+.jn-tag-game,
+.jn-legend-dot.jn-tag-game { background-color: #8e4fc7; }
+
+.jn-project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--jn-white);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.jn-project-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.75rem;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+.jn-project-card h3 { font-size: 1.15rem; }
+.jn-project-card p { color: var(--jn-ink-soft); }
+.jn-project-card time { color: var(--jn-ink-soft); font-size: 0.85rem; }
+
+.jn-project-card details,
+.jn-roadmap-card details,
+.jn-news-full-card details,
+.jn-news-card details {
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--jn-line);
+  padding-top: 0.75rem;
+}
+.jn-project-card summary,
+.jn-roadmap-card summary,
+.jn-news-full-card summary,
+.jn-news-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--jn-teal-700);
+  list-style: none;
+}
+.jn-project-card summary::-webkit-details-marker,
+.jn-roadmap-card summary::-webkit-details-marker,
+.jn-news-full-card summary::-webkit-details-marker,
+.jn-news-card summary::-webkit-details-marker { display: none; }
+.jn-project-card summary::before,
+.jn-roadmap-card summary::before,
+.jn-news-full-card summary::before,
+.jn-news-card summary::before {
+  content: "▸ ";
+  color: var(--jn-orange-500);
+}
+.jn-project-card details[open] summary::before,
+.jn-roadmap-card details[open] summary::before,
+.jn-news-full-card details[open] summary::before,
+.jn-news-card details[open] summary::before {
+  content: "▾ ";
+}
+.jn-project-card details ul,
+.jn-roadmap-details-body ul {
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--jn-ink-soft);
+  font-size: 0.92rem;
+}
+.jn-roadmap-details-body,
+.jn-roadmap-details-body p {
+  color: var(--jn-ink-soft);
+}
+.jn-roadmap-details-body {
+  margin-top: 0.6rem;
+}
+.jn-roadmap-subheading {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--jn-teal-800);
+  margin: 0.75rem 0 0.25rem;
+}
+.jn-roadmap-audience {
+  font-size: 0.9rem;
+}
+.jn-project-feature-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: var(--jn-ink-soft);
+}
+.jn-news-author {
+  font-style: italic;
+}
+
+/* स्क्रिनसट थम्बनेल */
+.jn-project-thumb {
+  width: calc(100% + 3.5rem);
+  margin: -1.75rem -1.75rem 1rem;
+  border-radius: var(--jn-radius) var(--jn-radius) 0 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: var(--jn-teal-100);
+}
+.jn-project-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* कार्डको हेडर पङ्क्ति — श्रेणी ट्याग + स्थिति ब्याज सँगसँगै */
+.jn-project-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.jn-project-card-meta .jn-project-tag { margin-bottom: 0; }
+.jn-project-status-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--jn-white);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+/* ट्याग चिप्स */
+.jn-project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.jn-project-tags li {
+  font-size: 0.78rem;
+  color: var(--jn-teal-700);
+  background: var(--jn-teal-100);
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+}
+
+/* डाउनलोड/भिजिट बटन — अब कार्डको "थप हेर्नुहोस्" (details) भित्र देखिन्छ */
+.jn-project-download {
+  margin-top: 1rem;
+}
+.jn-btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--jn-teal-700);
+  border: 2px solid var(--jn-teal-700);
+  color: var(--jn-white);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+}
+.jn-btn-download:hover,
+.jn-btn-download:focus {
+  background-color: var(--jn-teal-800);
+  border-color: var(--jn-teal-800);
+  color: var(--jn-white);
+}
+
+/* सारांश साइडबार (aside) */
+.jn-summary-aside {
+  background: var(--jn-teal-950);
+  color: var(--jn-white);
+  border-radius: var(--jn-radius);
+  padding: 1.75rem;
+}
+.jn-summary-aside h2 {
+  color: var(--jn-white);
+  font-size: 1.15rem;
+}
+.jn-summary-aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+.jn-summary-aside li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+}
+.jn-summary-aside li:last-child { border-bottom: none; }
+.jn-summary-aside a {
+  color: var(--jn-teal-100);
+  font-weight: 600;
+}
+.jn-summary-aside a:hover,
+.jn-summary-aside a:focus {
+  color: var(--jn-orange-400);
+}
+
+/* =========================================================
+   Login / Signup — प्रमाणीकरण कार्डहरू
+   ========================================================= */
+.jn-auth-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 2rem;
+  height: 100%;
+  box-shadow: var(--jn-shadow-sm);
+}
+.jn-auth-card h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+.jn-auth-card .form-label {
+  font-weight: 600;
+  color: var(--jn-teal-950);
+  font-size: 0.95rem;
+}
+.jn-auth-card .form-control {
+  border: 1px solid var(--jn-line);
+  padding: 0.65rem 0.9rem;
+}
+.jn-auth-card .form-control.is-invalid {
+  border-color: #c0392b;
+}
+.jn-auth-card .invalid-feedback {
+  color: #c0392b;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.jn-password-group {
+  position: relative;
+}
+.jn-password-toggle {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--jn-teal-700);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+}
+.jn-password-toggle:hover,
+.jn-password-toggle:focus {
+  color: var(--jn-orange-600);
+}
+.jn-forgot-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.jn-auth-divider {
+  border-top: 1px solid var(--jn-line);
+  margin: 2.5rem 0 2rem;
+}
+
+/* सेवा मिनि-कार्डहरू */
+.jn-service-mini {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  height: 100%;
+}
+.jn-service-mini .jn-feature-icon {
+  margin-inline: auto;
+}
+.jn-service-mini h3 { font-size: 1rem; }
+.jn-service-mini p { color: var(--jn-ink-soft); font-size: 0.9rem; margin-bottom: 0; }
+
+/* =========================================================
+   News — फिल्टर र समाचार कार्डहरू
+   ========================================================= */
+.jn-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+.jn-filter-btn {
+  border: 1px solid var(--jn-line);
+  background: var(--jn-white);
+  color: var(--jn-ink-soft);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+}
+.jn-filter-btn:hover,
+.jn-filter-btn:focus-visible {
+  border-color: var(--jn-orange-400);
+  color: var(--jn-orange-600);
+}
+.jn-filter-btn[aria-pressed="true"] {
+  background: var(--jn-teal-950);
+  border-color: var(--jn-teal-950);
+  color: var(--jn-white);
+}
+
+.jn-news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.jn-news-full-card {
+  background: var(--jn-white);
+  border: 1px solid var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 1.5rem;
+  box-shadow: var(--jn-shadow-sm);
+}
+.jn-news-full-card .jn-news-tag { margin-bottom: 0.75rem; }
+.jn-news-full-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+.jn-news-full-card p { color: var(--jn-ink-soft); font-size: 0.94rem; }
+.jn-news-version {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--jn-teal-700);
+  background: var(--jn-teal-100);
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+  margin-inline-start: 0.5rem;
+}
+.jn-news-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--jn-ink-soft);
+}
+.jn-news-empty,
+.jn-news-loading {
+  background: var(--jn-white);
+  border: 1px dashed var(--jn-line);
+  border-radius: var(--jn-radius);
+  padding: 2rem;
+  text-align: center;
+  color: var(--jn-ink-soft);
+  grid-column: 1 / -1;
+}
+.jn-load-more-wrap {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* समाचार पूरा विवरण पेज (news-detail.html) */
+.jn-news-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  color: var(--jn-ink-soft);
+  font-size: 0.9rem;
+  margin: 0.75rem 0 1.5rem;
+}
+.jn-news-detail-body {
+  max-width: 68ch;
+  color: var(--jn-ink);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+.jn-news-detail-body p {
+  margin-bottom: 1.1rem;
+}

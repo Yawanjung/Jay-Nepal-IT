@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>लगइन / साइनअप — Jay Nepal IT प्रविधि</title>
+  <meta
+    name="description"
+    content="जय नेपाल आईटी प्रविधिमा लगइन गर्नुहोस् वा नयाँ खाता बनाउनुहोस्।"
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <a class="jn-skip-link" href="#main-content">मुख्य सामग्रीमा जानुहोस्</a>
+
+  <header class="jn-header">
+    <nav class="navbar navbar-expand-lg jn-navbar" aria-label="मुख्य नेभिगेसन">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <span aria-hidden="true">🇳🇵</span>
+          Jay Nepal <span class="jn-brand-accent">IT</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#jnNavbarMenu"
+          aria-controls="jnNavbarMenu"
+          aria-expanded="false"
+          aria-label="नेभिगेसन मेनु खोल्नुहोस्/बन्द गर्नुहोस्"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="jnNavbarMenu">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item"><a class="nav-link" href="index.html">गृहपृष्ठ</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">हाम्रो बारेमा</a></li>
+            <li class="nav-item"><a class="nav-link" href="projects.html">हाम्रा परियोजनाहरू</a></li>
+            <li class="nav-item"><a class="nav-link" href="services.html">सेवाहरू</a></li>
+            <li class="nav-item"><a class="nav-link" href="news.html">समाचार</a></li>
+            <li class="nav-item"><a class="nav-link" href="coming-soon.html">आगामी</a></li>
+            <li class="nav-item ms-lg-2">
+              <a class="btn jn-btn-cta" aria-current="page" href="login.html">लगइन / साइनअप</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <header class="jn-page-header">
+      <div class="container">
+        <ol class="jn-breadcrumb">
+          <li><a href="index.html">गृहपृष्ठ</a></li>
+          <li aria-current="page">लगइन / साइनअप</li>
+        </ol>
+        <h1>तपाईंको खातामा स्वागत छ</h1>
+        <p>लगइन गर्नुहोस् वा केही सेकेन्डमा नयाँ खाता बनाउनुहोस्।</p>
+      </div>
+    </header>
+
+    <section class="jn-section" aria-labelledby="auth-heading" id="auth">
+      <div class="container">
+        <h2 class="visually-hidden" id="auth-heading">लगइन र साइनअप फारमहरू</h2>
+        <div class="row g-4">
+          <!-- ===================== लगइन फारम ===================== -->
+          <div class="col-12 col-lg-6">
+            <div class="jn-auth-card">
+              <h2>लगइन</h2>
+              <form id="jn-login-form" novalidate>
+                <div class="mb-3">
+                  <label for="jn-login-identifier" class="form-label">इमेल वा युजरनेम</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="jn-login-identifier"
+                    name="identifier"
+  maxlength="254" 
+                    aria-describedby="jn-login-identifier-feedback"
+                    required
+                  />
+                  <div id="jn-login-identifier-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <div class="mb-2">
+                  <label for="jn-login-password" class="form-label">पासवर्ड</label>
+                  <div class="jn-password-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="jn-login-password"
+                      name="password"
+  minlength="8"
+  maxlength="128"
+                      aria-describedby="jn-login-password-feedback"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="jn-password-toggle"
+                      data-target="jn-login-password"
+                      aria-pressed="false"
+                      aria-label="पासवर्ड देखाउनुहोस्"
+                    >देखाउनुहोस्</button>
+                  </div>
+                  <div id="jn-login-password-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <p class="mb-3">
+                  <a href="#" class="jn-forgot-link">पासवर्ड बिर्सनुभयो?</a>
+                </p>
+
+                <button type="submit" class="btn jn-btn-cta w-100">लगइन गर्नुहोस्</button>
+
+                <p id="jn-login-status" class="jn-form-status mt-3 mb-0" role="status" aria-live="polite"></p>
+              </form>
+            </div>
+          </div>
+
+          <!-- ===================== साइनअप फारम ===================== -->
+          <div class="col-12 col-lg-6">
+            <div class="jn-auth-card">
+              <h2>नयाँ खाता बनाउनुहोस्</h2>
+              <form id="jn-signup-form" novalidate>
+                <div class="mb-3">
+                  <label for="jn-signup-name" class="form-label">पूरा नाम</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="jn-signup-name"
+                    name="fullname"
+  maxlength="50"
+  pattern="[A-Za-z\u0900-\u097F\s]+" 
+                    aria-describedby="jn-signup-name-feedback"
+                    required
+                  />
+                  <div id="jn-signup-name-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="jn-signup-email" class="form-label">इमेल</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="jn-signup-email"
+                    name="email"
+  maxlength="254"
+                    aria-describedby="jn-signup-email-feedback"
+                    required
+                  />
+                  <div id="jn-signup-email-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="jn-signup-password" class="form-label">पासवर्ड</label>
+                  <div class="jn-password-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="jn-signup-password"
+                      name="password"
+  minlength="8"
+  maxlength="128"
+                      aria-describedby="jn-signup-password-feedback jn-signup-password-hint"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="jn-password-toggle"
+                      data-target="jn-signup-password"
+                      aria-pressed="false"
+                      aria-label="पासवर्ड देखाउनुहोस्"
+                    >देखाउनुहोस्</button>
+                  </div>
+                  <div id="jn-signup-password-hint" class="form-text">कम्तीमा ८ अक्षर हुनुपर्छ।</div>
+                  <div id="jn-signup-password-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="jn-signup-confirm" class="form-label">पासवर्ड पुष्टि गर्नुहोस्</label>
+                  <div class="jn-password-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="jn-signup-confirm"
+                      name="confirm_password"
+                      aria-describedby="jn-signup-confirm-feedback"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="jn-password-toggle"
+                      data-target="jn-signup-confirm"
+                      aria-pressed="false"
+                      aria-label="पासवर्ड देखाउनुहोस्"
+                    >देखाउनुहोस्</button>
+                  </div>
+                  <div id="jn-signup-confirm-feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
+
+                <button type="submit" class="btn jn-btn-cta w-100">साइनअप गर्नुहोस्</button>
+
+                <p id="jn-signup-status" class="jn-form-status mt-3 mb-0" role="status" aria-live="polite"></p>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <hr class="jn-auth-divider" />
+
+        <!-- ===================== सेवा मिनि-कार्डहरू ===================== -->
+        <h2 class="visually-hidden">हाम्रा थप सेवाहरू</h2>
+        <div class="row g-4">
+          <div class="col-12 col-md-4">
+            <article class="jn-feature-card jn-service-mini">
+              <div class="jn-feature-icon" aria-hidden="true">🖥️</div>
+              <h3>वेबसाइट डिजाइन</h3>
+              <p>सेवाभाव, आकर्षक, तर पहुँचयोग्य वेबसाइट डिजाइन।</p>
+            </article>
+          </div>
+          <div class="col-12 col-md-4">
+            <article class="jn-feature-card jn-service-mini">
+              <div class="jn-feature-icon" aria-hidden="true">📱</div>
+              <h3>एप विकास</h3>
+              <p>एन्ड्रोइड र iOS का लागि छिटो र भरपर्दो मोबाइल एप विकास।</p>
+            </article>
+          </div>
+<!--
+          <div class="col-12 col-md-4">
+            <article class="jn-feature-card jn-service-mini">
+              <div class="jn-feature-icon" aria-hidden="true">🧭</div>
+              <h3>आईटी परामर्श</h3>
+              <p>आईटी रणनीति र प्रविधि छनोटमा विशेषज्ञ सल्लाह।</p>
+            </article>
+          </div>
+-->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="jn-footer">
+    <div class="container">
+      <div class="row gy-3 align-items-center">
+        <div class="col-12 col-md-6">
+          <p class="mb-1 fw-semibold text-white">Jay Nepal IT </p>
+          <p class="mb-0">
+            &copy; 26 February, 2026  Jay Nepal IT। सर्वाधिकार सुरक्षित। परिकल्पना तथा निर्माण: येवन सिंजाली मगर
+            <br />
+            <a href="mailto:jaynepalit1925@gmail.com">jaynepalit1925@gmail.com</a>
+          </p>
+        </div>
+        <div class="col-12 col-md-6 text-md-end">
+          <nav aria-label="सामाजिक सञ्जाल लिङ्कहरू">
+            <a class="jn-social-link" href="https://www.facebook.com/profile.php?id=61587344013840" aria-label="Facebook मा हामीलाई फलो गर्नुहोस्">
+              <span aria-hidden="true">f</span>
+            </a>
+                        <a class="jn-social-link" href="#" aria-label="YouTube मा हाम्रो च्यानल हेर्नुहोस्">
+              <span aria-hidden="true">▶</span>
+            </a>
+            
+          </nav>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/api-config.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

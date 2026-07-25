@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>हाम्रा सेवाहरू — Jay Nepal IT प्रविधि</title>
+  <meta
+    name="description"
+    content="जय नेपाल आईटी प्रविधिले प्रदान गर्ने सेवाहरू — वेबसाइट डिजाइन, एप विकास, आईटी परामर्श, र थप।"
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Hind:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link href="assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <a class="jn-skip-link" href="#main-content">मुख्य सामग्रीमा जानुहोस्</a>
+
+  <header class="jn-header">
+    <nav class="navbar navbar-expand-lg jn-navbar" aria-label="मुख्य नेभिगेसन">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <span aria-hidden="true">🇳🇵</span>
+          Jay Nepal <span class="jn-brand-accent">IT</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#jnNavbarMenu"
+          aria-controls="jnNavbarMenu"
+          aria-expanded="false"
+          aria-label="नेभिगेसन मेनु खोल्नुहोस्/बन्द गर्नुहोस्"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="jnNavbarMenu">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item"><a class="nav-link" href="index.html">गृहपृष्ठ</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">हाम्रो बारेमा</a></li>
+            <li class="nav-item"><a class="nav-link" href="projects.html">हाम्रा परियोजनाहरू</a></li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="services.html">सेवाहरू</a>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="news.html">समाचार</a></li>
+            <li class="nav-item"><a class="nav-link" href="coming-soon.html">आगामी</a></li>
+            <li class="nav-item ms-lg-2">
+              <a class="btn jn-btn-cta" href="login.html">लगइन / साइनअप</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <header class="jn-page-header">
+      <div class="container">
+        <ol class="jn-breadcrumb">
+          <li><a href="index.html">गृहपृष्ठ</a></li>
+          <li aria-current="page">सेवाहरू</li>
+        </ol>
+        <h1>हाम्रा सेवाहरू</h1>
+        <p>वेबसाइट डिजाइन लगायतका  अन्य सेवाहरू— तपाईंको आवश्यकता अनुसार सेवा।</p>
+      </div>
+    </header>
+
+    <section class="jn-section" aria-labelledby="services-heading" id="services-list">
+      <div class="container">
+        <h2 class="visually-hidden" id="services-heading">सबै सेवाहरू</h2>
+
+        <p id="jn-services-status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+        <div class="row g-4" id="jn-services-grid">
+          <div class="col-12">
+            <p class="jn-news-loading">सेवाहरू लोड हुँदैछ…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="jn-footer">
+    <div class="container">
+      <div class="row gy-3 align-items-center">
+        <div class="col-12 col-md-6">
+          <p class="mb-1 fw-semibold text-white">Jay Nepal IT </p>
+          <p class="mb-0">
+            &copy; 26 February, 2026  Jay Nepal IT। सर्वाधिकार सुरक्षित। परिकल्पना तथा निर्माण: येवन सिंजाली मगर
+            <br />
+            <a href="mailto:jaynepalit1925@gmail.com">jaynepalit1925@gmail.com</a>
+          </p>
+        </div>
+        <div class="col-12 col-md-6 text-md-end">
+          <nav aria-label="सामाजिक सञ्जाल लिङ्कहरू">
+            <a class="jn-social-link" href="https://www.facebook.com/profile.php?id=61587344013840" aria-label="Facebook मा हामीलाई फलो गर्नुहोस्">
+              <span aria-hidden="true">f</span>
+            </a>
+                        <a class="jn-social-link" href="#" aria-label="YouTube मा हाम्रो च्यानल हेर्नुहोस्">
+              <span aria-hidden="true">▶</span>
+            </a>
+            
+          </nav>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/api-config.js"></script>
+  <script src="assets/js/services.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# नचाहिने फाइलहरू
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+staticfiles/
+venv/
