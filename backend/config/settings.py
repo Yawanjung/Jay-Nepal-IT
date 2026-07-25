@@ -122,11 +122,10 @@ TIME_ZONE = "Asia/Kathmandu"
 USE_I18N = True
 USE_TZ = True
 
-# ---------------------------------------------------------------
 # स्ट्याटिक फाइलहरू (Bootstrap 5 फ्रन्टइन्ड + Django Admin CSS/JS)
-# ---------------------------------------------------------------
 STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "frontend_assets"]
+# BASE_DIR भन्दा एक स्टेप बाहिर (Root folder) भएको frontend फोल्डरलाई देखाउने
+STATICFILES_DIRS = [BASE_DIR.parent / "frontend"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 if DEBUG:
