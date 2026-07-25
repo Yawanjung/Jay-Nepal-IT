@@ -49,6 +49,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # WhiteNoise — SecurityMiddleware पछि, अरू जुनसुकै भन्दा माथि हुनुपर्छ।
+    # DEBUG=False (production) मा Django dev server ले static/admin CSS-JS
+    # स्वतः serve गर्न छोड्छ; WhiteNoise ले त्यो काम gunicorn मार्फत नै
+    # (छुट्टै Nginx/CDN नभए पनि) सुरक्षित र सजिलै गर्छ।
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -118,11 +123,18 @@ USE_I18N = True
 USE_TZ = True
 
 # ---------------------------------------------------------------
-# स्ट्याटिक फाइलहरू (Bootstrap 5 फ्रन्टइन्ड)
+# स्ट्याटिक फाइलहरू (Bootstrap 5 फ्रन्टइन्ड + Django Admin CSS/JS)
 # ---------------------------------------------------------------
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "frontend_assets"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+if DEBUG:
+    # dev मा collectstatic नचलाई नै runserver ले सिधै फाइल फेला पारोस्।
+    WHITENOISE_USE_FINDERS = True
+else:
+    # production मा compressed + cache-busting hashed filename (collectstatic पछि)।
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -192,3 +204,6 @@ SIGNUP_RATE_LIMIT = '3/m'
 # (वैकल्पिक) यदि धेरै रिक्वेस्ट आएपछि के गर्ने भन्ने सेटिङ
 RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default' # यदि तपाईंले पछि Redis प्रयोग गर्नुभयो भने यो काम लाग्छ
+# Proxy (Cloudflare / Railway) SSL Redirect Loop रोक्नका लागि
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
