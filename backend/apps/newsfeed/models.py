@@ -37,7 +37,7 @@ class NewsPost(models.Model):
         COMMUNITY = "community", "समुदाय अपडेटहरू"
 
     title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=270, unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     excerpt = models.CharField(max_length=300)
     body = models.TextField(blank=True)
     category = models.CharField(max_length=20, choices=Category.choices, db_index=True)
