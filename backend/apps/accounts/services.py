@@ -5,6 +5,7 @@ Services = business logic + लेखन (write) कार्यहरू। Vie
 मोडेल नछोई यहाँका functions मार्फत मात्र डेटा परिवर्तन गर्छन्।
 ---------------------------------------------------------------
 """
+import logging
 import secrets
 from datetime import timedelta
 
@@ -20,6 +21,7 @@ from . import selectors
 from .models import AccessControlEntry, AuthEventLog, EmailVerificationToken, Profile
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class EmailNotVerifiedError(Exception):
@@ -33,7 +35,6 @@ class EmailNotVerifiedError(Exception):
 TOKEN_VALIDITY_HOURS = 24
 
 
-@transaction.atomic
 def register_user(*, full_name: str, email: str, password: str) -> User:
     """नयाँ प्रयोगकर्ता खाता बनाउने — signup.html फारमसँग मिल्दो।
 
@@ -42,6 +43,14 @@ def register_user(*, full_name: str, email: str, password: str) -> User:
     (न्यूनतम लम्बाइ, सामान्य/numeric पासवर्ड रोक्ने, आदि) यहाँ
     validate_password() मार्फत server-side मै लागू गरिन्छ — यसले सिधै
     API कल गरेर कमजोर पासवर्ड राख्न खोज्ने प्रयासलाई रोक्छ।
+
+    इमेल-भेजाइ नोट: Account (User/Profile/Token) बनाउने काम मात्र
+    transaction.atomic() भित्र छ — इमेल पठाउने काम जानाजान बाहिर र
+    try/except भित्र राखिएको छ। यसो नगरे, SMTP credential गलत/नभएको
+    बेला (जस्तै production मा EMAIL_HOST_PASSWORD सेट नभएको) पूरा
+    signup नै silently रद्द (rollback) हुन्थ्यो — प्रयोगकर्ताले
+    "signup भयो" भन्ने सोच्ने तर account वास्तवमै DB मा नबन्ने, र
+    पछि login गर्दा "प्रमाणीकरण असफल" देखिने खतरनाक बग हुन्थ्यो।
     """
     if User.objects.filter(email__iexact=email).exists():
         raise ValidationError("यो इमेलबाट पहिल्यै खाता बनिसकेको छ।")
@@ -64,18 +73,27 @@ def register_user(*, full_name: str, email: str, password: str) -> User:
         user=User(username=username, email=email, first_name=first_name, last_name=last_name),
     )
 
-    user = User.objects.create_user(
-        username=username,
-        email=email,
-        password=password,
-        first_name=first_name,
-        last_name=last_name,
-        role=User.Role.VIEWER,
-    )
-    Profile.objects.create(user=user)
+    with transaction.atomic():
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            role=User.Role.VIEWER,
+        )
+        Profile.objects.create(user=user)
+        token = create_verification_token(user=user)
 
-    token = create_verification_token(user=user)
-    send_verification_email(user=user, token=token.token)
+    try:
+        send_verification_email(user=user, token=token.token)
+    except Exception:
+        logger.exception(
+            "Signup पछि verification इमेल पठाउन सकिएन (user id=%s, email=%s) — "
+            "EMAIL_HOST/EMAIL_HOST_USER/EMAIL_HOST_PASSWORD जाँच्नुहोस्।",
+            user.id,
+            user.email,
+        )
 
     return user
 
@@ -136,7 +154,15 @@ def resend_verification_email(*, email: str):
         return
 
     token = create_verification_token(user=user)
-    send_verification_email(user=user, token=token.token)
+    try:
+        send_verification_email(user=user, token=token.token)
+    except Exception:
+        logger.exception(
+            "Resend-verification इमेल पठाउन सकिएन (user id=%s, email=%s) — "
+            "EMAIL_HOST/EMAIL_HOST_USER/EMAIL_HOST_PASSWORD जाँच्नुहोस्।",
+            user.id,
+            user.email,
+        )
 
 
 def authenticate_login(*, identifier: str, password: str, ip_address: str = None, user_agent: str = ""):
