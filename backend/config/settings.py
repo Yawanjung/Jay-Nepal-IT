@@ -126,8 +126,7 @@ USE_TZ = True
 # स्ट्याटिक फाइलहरू (Bootstrap 5 फ्रन्टइन्ड + Django Admin CSS/JS)
 # ---------------------------------------------------------------
 STATIC_URL = "static/"
-# BASE_DIR भन्दा एक स्टेप बाहिर (Root folder) भएको frontend फोल्डरलाई देखाउने
-STATICFILES_DIRS = [BASE_DIR.parent / "frontend"]
+STATICFILES_DIRS = [BASE_DIR / "frontend_assets"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 if DEBUG:
@@ -151,8 +150,15 @@ CSRF_TRUSTED_ORIGINS = os.environ.get(
     "CSRF_TRUSTED_ORIGINS", "http://localhost:5500,http://127.0.0.1:5500"
 ).split(",")
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SAMESITE = "Lax"
+# नोट: Frontend (jaynepalit.com/Firebase) र Backend (Railway) फरक-फरक
+# domain मा भएकोले (cross-origin), production मा "Lax" cookie ले काम
+# गर्दैन — browser ले cross-site fetch मा Lax cookie नै नपठाई CSRF
+# verification बारम्बार फेल हुन्थ्यो (403)। "None" ले cross-origin मा
+# पनि cookie पठाउन दिन्छ, तर यसलाई "Secure=True" (HTTPS) सँगै मात्र
+# प्रयोग गर्न मिल्छ — त्यसैले local HTTP dev मा भने "Lax" नै राखिएको छ
+# (नत्र browser ले "None" cookie लाई HTTP मा पूर्ण रूपमा अस्वीकार गर्छ)।
+CSRF_COOKIE_SAMESITE = "Lax" if DEBUG else "None"
+SESSION_COOKIE_SAMESITE = "Lax" if DEBUG else "None"
 
 # ---------------------------------------------------------------
 # इमेल (Email verification का लागि)
@@ -194,16 +200,14 @@ if not DEBUG:
 # Admin प्यानल
 # ---------------------------------------------------------------
 ADMIN_URL_PATH = os.environ.get("DJANGO_ADMIN_URL", "admin/")
-
 # ---------------------------------------------------------------
 # Rate Limit Settings (django-ratelimit का लागि)
 # ---------------------------------------------------------------
+# १ मिनेटमा ५ पटकसम्म लगइन प्रयास
 LOGIN_RATE_LIMIT = '5/m'
+# १ मिनेटमा ३ पटकसम्म साइनअप प्रयास
 SIGNUP_RATE_LIMIT = '3/m'
 
+# (वैकल्पिक) यदि धेरै रिक्वेस्ट आएपछि के गर्ने भन्ने सेटिङ
 RATELIMIT_ENABLE = True
-RATELIMIT_USE_CACHE = 'default'
-
-# Proxy (Cloudflare / Railway) SSL Redirect Loop रोक्नका लागि
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-USE_X_FORWARDED_HOST = True
+RATELIMIT_USE_CACHE = 'default' # यदि तपाईंले पछि Redis प्रयोग गर्नुभयो भने यो काम लाग्छ
