@@ -196,6 +196,13 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+# Railway (र धेरैजसो अरू PaaS) ले HTTPS लाई आफ्नो edge/proxy मा नै टुंग्याउँछ,
+# अनि भित्री container सँग plain HTTP मा कुरा गर्छ। यो लाइन नभई, Django लाई
+# थाहै हुँदैन कि original request साँच्चै HTTPS थियो — जसले गर्दा
+# SECURE_SSL_REDIRECT ले हरेक (पहिल्यै HTTPS भएको) request लाई पनि फेरि
+# "HTTPS मा जानू" भनेर redirect गरिरहन्छ, अनन्त loop (ERR_TOO_MANY_REDIRECTS)
+# बनाउँछ। यसले Railway को X-Forwarded-Proto header हेरेर चिन्न सक्छ।
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000
