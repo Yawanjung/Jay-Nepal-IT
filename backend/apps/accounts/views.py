@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib.auth import login as django_login
@@ -14,6 +15,8 @@ from . import selectors, services
 from .decorators import check_permission
 from .services import EmailNotVerifiedError
 
+logger = logging.getLogger(__name__)
+
 def _parse_json(request):
     try:
         return json.loads(request.body or "{}")
@@ -25,10 +28,20 @@ def _parse_json(request):
 def csrf_view(request):
     return JsonResponse({"ok": True, "csrfToken": get_token(request)})
 
-@ratelimit(key='ip', rate=settings.SIGNUP_RATE_LIMIT, block=True)
+@ratelimit(key='ip', rate=settings.SIGNUP_RATE_LIMIT, block=False)
 @require_http_methods(["POST"])
 @csrf_protect
 def signup_view(request):
+    if getattr(request, "limited", False):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "धेरै पटक signup प्रयास भयो। कृपया केही मिनेटपछि फेरि प्रयास गर्नुहोस्।",
+                "error_code": "rate_limited",
+            },
+            status=429,
+        )
+
     data = _parse_json(request)
     full_name = data.get("fullname", "").strip()
     email = data.get("email", "").strip()
@@ -44,15 +57,31 @@ def signup_view(request):
         # सन्देश दिन सक्छ — त्यस्तो बेला .message (singular) ले AttributeError
         # दिन्छ, त्यसैले सधैँ .messages (plural, list) प्रयोग गर्ने।
         return JsonResponse({"ok": False, "error": " ".join(exc.messages)}, status=400)
+    except Exception:
+        logger.exception("Signup गर्दा अनपेक्षित त्रुटि (email=%s)", email)
+        return JsonResponse(
+            {"ok": False, "error": "server त्रुटि भयो। कृपया केही बेरपछि फेरि प्रयास गर्नुहोस्।"},
+            status=500,
+        )
 
     return JsonResponse(
         {"ok": True, "user": {"id": user.id, "username": user.username, "email": user.email}}
     )
 
-@ratelimit(key='ip', rate=settings.LOGIN_RATE_LIMIT, block=True)
+@ratelimit(key='ip', rate=settings.LOGIN_RATE_LIMIT, block=False)
 @require_http_methods(["POST"])
 @csrf_protect
 def login_view(request):
+    if getattr(request, "limited", False):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "धेरै पटक लगइन प्रयास भयो। कृपया केही मिनेटपछि फेरि प्रयास गर्नुहोस्।",
+                "error_code": "rate_limited",
+            },
+            status=429,
+        )
+
     data = _parse_json(request)
     identifier = data.get("identifier", "").strip()
     password = data.get("password", "")
