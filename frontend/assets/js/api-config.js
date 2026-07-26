@@ -3,13 +3,23 @@
  * ---------------------------------------------------------------
  * Django backend सँग जोड्ने साझा सेटिङ र सुरक्षित fetch wrapper।
  *
- * लोकल विकासका लागि Django `runserver` डिफल्ट रूपमा
- * http://127.0.0.1:8000 मा चल्छ। Production मा डिप्लोय गर्दा
- * तलको JN_API_BASE लाई आफ्नो डोमेन अनुसार बदल्नुहोस्
- * (जस्तै: "https://api.jaynepalit.com/api")।
+ * JN_API_BASE अब आफैं पत्ता लगाइन्छ:
+ * - localhost/127.0.0.1 (लोकल dev, python -m http.server) मा
+ *   चलिरहँदा -> http://127.0.0.1:8000/api
+ * - अरू जुनसुकै डोमेन (jaynepalit.com/Firebase Hosting) मा
+ *   चलिरहँदा -> Railway को आफ्नै backend domain
+ *   (custom domain (api.jaynepalit.com) Railway plan को सीमाले
+ *   थप्न नमिलेकोले, Railway ले नै दिएको डोमेन सिधै प्रयोग गरिएको हो)।
  * ---------------------------------------------------------------
  */
-window.JN_API_BASE = window.JN_API_BASE || "http://127.0.0.1:8000/api";
+const JN_IS_LOCAL_DEV =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+window.JN_API_BASE =
+  window.JN_API_BASE ||
+  (JN_IS_LOCAL_DEV
+    ? "http://127.0.0.1:8000/api"
+    : "https://jay-nepal-it-production.up.railway.app/api");
 
 function jnGetCookie(name) {
   const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
