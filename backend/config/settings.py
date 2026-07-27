@@ -224,3 +224,47 @@ SIGNUP_RATE_LIMIT = '3/m'
 # (वैकल्पिक) यदि धेरै रिक्वेस्ट आएपछि के गर्ने भन्ने सेटिङ
 RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default' # यदि तपाईंले पछि Redis प्रयोग गर्नुभयो भने यो काम लाग्छ
+
+# ---------------------------------------------------------------
+# Logging — Railway को Deploy Logs मा देखियोस् भनेर
+# ---------------------------------------------------------------
+# नोट: DEBUG=False हुँदा, LOGGING configure नगरे Django ले
+# django.request/django.security (CSRF failure, 500 आदि) जस्ता
+# warning हरू console मा नदेखाई AdminEmailHandler तिर पठाउँछ —
+# र ADMINS सेट नभएकोले ती कतै जान्थेनन् (logs मा खाली देखिन्थ्यो)।
+# यसले सबै log stdout मा पठाउँछ, जुन Railway ले capture गर्छ।
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
