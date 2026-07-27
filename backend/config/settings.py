@@ -156,15 +156,16 @@ CSRF_TRUSTED_ORIGINS = [
     if o.strip()
 ]
 CSRF_COOKIE_HTTPONLY = False
-# नोट: Frontend (jaynepalit.com/Firebase) र Backend (Railway) फरक-फरक
-# domain मा भएकोले (cross-origin), production मा "Lax" cookie ले काम
-# गर्दैन — browser ले cross-site fetch मा Lax cookie नै नपठाई CSRF
-# verification बारम्बार फेल हुन्थ्यो (403)। "None" ले cross-origin मा
-# पनि cookie पठाउन दिन्छ, तर यसलाई "Secure=True" (HTTPS) सँगै मात्र
-# प्रयोग गर्न मिल्छ — त्यसैले local HTTP dev मा भने "Lax" नै राखिएको छ
-# (नत्र browser ले "None" cookie लाई HTTP मा पूर्ण रूपमा अस्वीकार गर्छ)।
-CSRF_COOKIE_SAMESITE = "Lax" if DEBUG else "None"
-SESSION_COOKIE_SAMESITE = "Lax" if DEBUG else "None"
+# नोट: पहिले frontend (jaynepalit.com) र backend (railway.app) पूर्ण
+# फरक domain थिए (cross-site), त्यसैले production मा SameSite=None
+# चाहिन्थ्यो। अब backend api.jaynepalit.com (Cloudflare Worker
+# मार्फत Railway मा proxy) मा सारिएपछि, दुवै उही root domain
+# (jaynepalit.com) कै subdomain भए — browser का लागि यो "same-site"
+# नै मानिन्छ (SameSite चेक गर्दा subdomain होइन, root domain हेरिन्छ)।
+# त्यसैले अब बढी सुरक्षित "Lax" नै जताततै प्रयोग गर्न मिल्छ, "None"
+# चाहिँदैन।
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 
 # ---------------------------------------------------------------
 # इमेल (Email verification का लागि)

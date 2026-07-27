@@ -7,9 +7,10 @@
  * - localhost/127.0.0.1 (लोकल dev, python -m http.server) मा
  *   चलिरहँदा -> http://127.0.0.1:8000/api
  * - अरू जुनसुकै डोमेन (jaynepalit.com/Firebase Hosting) मा
- *   चलिरहँदा -> Railway को आफ्नै backend domain
- *   (custom domain (api.jaynepalit.com) Railway plan को सीमाले
- *   थप्न नमिलेकोले, Railway ले नै दिएको डोमेन सिधै प्रयोग गरिएको हो)।
+ *   चलिरहँदा -> https://api.jaynepalit.com/api
+ *   (यो Cloudflare Worker मार्फत Railway backend मा proxy हुन्छ —
+ *   frontend र backend दुवै अब jaynepalit.com कै subdomain भएकोले
+ *   "same-site" मानिन्छन्, third-party cookie block हुँदैन।)
  * ---------------------------------------------------------------
  */
 const JN_IS_LOCAL_DEV =
@@ -17,9 +18,7 @@ const JN_IS_LOCAL_DEV =
 
 window.JN_API_BASE =
   window.JN_API_BASE ||
-  (JN_IS_LOCAL_DEV
-    ? "http://127.0.0.1:8000/api"
-    : "https://jay-nepal-it-production.up.railway.app/api");
+  (JN_IS_LOCAL_DEV ? "http://127.0.0.1:8000/api" : "https://api.jaynepalit.com/api");
 
 function jnGetCookie(name) {
   const match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
