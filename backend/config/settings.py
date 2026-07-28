@@ -166,6 +166,15 @@ CSRF_COOKIE_HTTPONLY = False
 # चाहिँदैन।
 CSRF_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SAMESITE = "Lax"
+# CSRF/session cookie लाई jaynepalit.com का सबै subdomain (jaynepalit.com
+# र api.jaynepalit.com दुवै) बीच साझा बनाउने। यो नराखे, cookie
+# api.jaynepalit.com मा मात्र सीमित (host-only) रहन्थ्यो — frontend
+# (jaynepalit.com) मा चलिरहेको JS ले त्यो cookie कहिल्यै document.cookie
+# बाट पढ्न पाउँदैनथ्यो (Django को CSRF ढाँचालाई JS ले cookie पढेर
+# X-CSRFToken header मा राख्नुपर्छ), जसले गर्दा header सधैँ खाली गएर
+# "CSRF token missing" आइरहन्थ्यो।
+CSRF_COOKIE_DOMAIN = None if DEBUG else ".jaynepalit.com"
+SESSION_COOKIE_DOMAIN = None if DEBUG else ".jaynepalit.com"
 
 # ---------------------------------------------------------------
 # इमेल (Email verification का लागि)
