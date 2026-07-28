@@ -189,6 +189,15 @@ EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True") == "True"
+# महत्त्वपूर्ण: यो नराखे, SMTP server सँग जडान अवरुद्ध/धीमा भएमा
+# (जस्तै Railway ले त्यो port/host रोकेको भए) Django ले अनन्तसम्म
+# कुर्छ — जुनसम्म gunicorn को आफ्नै worker timeout (डिफल्ट ३० सेकेन्ड)
+# ले धैर्य गुमाएर पूरै worker प्रोसेस नै जबरजस्ती मार्छ (SystemExit,
+# जुन सामान्य try/except Exception ले पनि समात्न सक्दैन) — signup/login
+# पूर्ण रूपमा crash हुन्थ्यो, र त्यो worker को session/cookie समेत
+# हराउँथ्यो। छोटो timeout राखे, SMTP असफल भए चाँडै (सामान्य, समात्न
+# मिल्ने error सहित) थाहा हुन्छ, worker मर्दैन।
+EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "10"))
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "no-reply@jaynepalit.com")
 
 # Verification लिङ्क बनाउँदा प्रयोग हुने frontend को ठेगाना
