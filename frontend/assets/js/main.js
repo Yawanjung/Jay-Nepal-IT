@@ -111,7 +111,46 @@
     initPasswordToggles();
     initLoginForm();
     initSignupForm();
+    initNavAuthState();
   });
+
+  /* =========================================================
+     Navigation bar — Login गरिसकेपछि "लगइन / साइनअप" बटनलाई
+     "लगआउट" मा बदल्ने। कुनै HTML फाइल छुनु नपरोस् भनेर, यहाँ
+     JS ले नै existing लगइन link (href="login.html") पत्ता
+     लगाएर आफैं बदल्छ — सबै पेजमा main.js लोड भइसकेकोले, यो
+     एउटै ठाउँबाट सबैतिर लागू हुन्छ।
+     ========================================================= */
+  async function initNavAuthState() {
+    const loginLinks = document.querySelectorAll('a[href="login.html"]');
+    if (loginLinks.length === 0) return;
+
+    try {
+      const response = await jnApiFetch("/accounts/me/");
+      if (!response.ok) return; // लगइन नभएको अवस्था — बटन जस्ताको त्यस्तै रहन्छ
+
+      const data = await response.json();
+      const user = data.user || {};
+      const displayName = user.first_name || user.username || "प्रयोगकर्ता";
+
+      loginLinks.forEach(function (link) {
+        link.textContent = `लगआउट (${displayName})`;
+        link.setAttribute("href", "#");
+        link.setAttribute("role", "button");
+        link.addEventListener("click", async function (event) {
+          event.preventDefault();
+          try {
+            await jnApiFetch("/accounts/logout/", { method: "POST" });
+          } catch (err) {
+            // silent — logout API नपुगे पनि प्रयोगकर्तालाई homepage मा लैजाने
+          }
+          window.location.href = "index.html";
+        });
+      });
+    } catch (err) {
+      // API नपुगे पनि silently बेवास्ता — बटन जस्ताको त्यस्तै रहन्छ
+    }
+  }
 
   /* =========================================================
      पासवर्ड आँखा टगल (Password visibility toggle)

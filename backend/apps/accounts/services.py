@@ -7,6 +7,7 @@ Services = business logic + लेखन (write) कार्यहरू। Vie
 """
 import logging
 import secrets
+import threading
 from datetime import timedelta
 
 from django.conf import settings
@@ -22,6 +23,27 @@ from .models import AccessControlEntry, AuthEventLog, EmailVerificationToken, Pr
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
+
+
+def _send_verification_email_background(*, user_id, email, token):
+    """send_verification_email() लाई छुट्टै thread मा चलाउने, ताकि SMTP
+    ढिलो/असफल भए पनि (EMAIL_TIMEOUT सम्म) HTTP response कुर्नु नपरोस्।
+    Signup/resend-verification तुरुन्तै फर्कन्छ; इमेल background मा
+    आफ्नै गतिमा पठाइन्छ, असफल भए log मा मात्र देखिन्छ।"""
+
+    def _run():
+        try:
+            user = User.objects.get(pk=user_id)
+            send_verification_email(user=user, token=token)
+        except Exception:
+            logger.exception(
+                "Verification इमेल (background) पठाउन सकिएन (user id=%s, email=%s) — "
+                "EMAIL_HOST/EMAIL_HOST_USER/EMAIL_HOST_PASSWORD जाँच्नुहोस्।",
+                user_id,
+                email,
+            )
+
+    threading.Thread(target=_run, daemon=True).start()
 
 
 class EmailNotVerifiedError(Exception):
@@ -86,11 +108,10 @@ def register_user(*, full_name: str, email: str, password: str) -> User:
         token = create_verification_token(user=user)
 
     try:
-        send_verification_email(user=user, token=token.token)
+        _send_verification_email_background(user_id=user.id, email=user.email, token=token.token)
     except Exception:
         logger.exception(
-            "Signup पछि verification इमेल पठाउन सकिएन (user id=%s, email=%s) — "
-            "EMAIL_HOST/EMAIL_HOST_USER/EMAIL_HOST_PASSWORD जाँच्नुहोस्।",
+            "Signup पछि verification इमेल background मा पठाउन सकिएन (user id=%s, email=%s)",
             user.id,
             user.email,
         )
@@ -155,11 +176,10 @@ def resend_verification_email(*, email: str):
 
     token = create_verification_token(user=user)
     try:
-        send_verification_email(user=user, token=token.token)
+        _send_verification_email_background(user_id=user.id, email=user.email, token=token.token)
     except Exception:
         logger.exception(
-            "Resend-verification इमेल पठाउन सकिएन (user id=%s, email=%s) — "
-            "EMAIL_HOST/EMAIL_HOST_USER/EMAIL_HOST_PASSWORD जाँच्नुहोस्।",
+            "Resend-verification इमेल background मा पठाउन सकिएन (user id=%s, email=%s)",
             user.id,
             user.email,
         )
