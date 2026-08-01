@@ -81,6 +81,13 @@ class ResendAPIEmailBackend(BaseEmailBackend):
                 headers={
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json",
+                    # महत्त्वपूर्ण: Resend को API Cloudflare ले सुरक्षित गरेको छ।
+                    # urllib को default User-Agent ("Python-urllib/x.x") लाई
+                    # Cloudflare ले bot/script ठानेर block गर्छ (error code
+                    # 1010) — यो सामान्य browser जस्तो User-Agent राखेर
+                    # त्यो block बाट जोगिने।
+                    "User-Agent": "JayNepalIT-Django-Mailer/1.0",
+                    "Accept": "application/json",
                 },
             )
             try:
