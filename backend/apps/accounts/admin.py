@@ -1,7 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import AccessControlEntry, AuthEventLog, EmailVerificationToken, Profile, User
+from .models import (
+    AccessControlEntry,
+    AuthEventLog,
+    EmailVerificationToken,
+    PasswordResetToken,
+    Profile,
+    User,
+)
 
 
 @admin.register(User)
@@ -37,6 +44,14 @@ class AuthEventLogAdmin(admin.ModelAdmin):
 
 @admin.register(EmailVerificationToken)
 class EmailVerificationTokenAdmin(admin.ModelAdmin):
+    list_display = ("user", "is_used", "created_at", "expires_at")
+    list_filter = ("is_used",)
+    search_fields = ("user__username", "user__email")
+    readonly_fields = ("token", "created_at")
+
+
+@admin.register(PasswordResetToken)
+class PasswordResetTokenAdmin(admin.ModelAdmin):
     list_display = ("user", "is_used", "created_at", "expires_at")
     list_filter = ("is_used",)
     search_fields = ("user__username", "user__email")

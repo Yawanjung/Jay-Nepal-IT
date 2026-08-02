@@ -161,6 +161,35 @@ class EmailVerificationToken(models.Model):
         return f"{self.user.username} — {'प्रयोग भयो' if self.is_used else 'बाँकी'}"
 
 
+class PasswordResetToken(models.Model):
+    """
+    पासवर्ड रिसेट टोकन — "पासवर्ड बिर्सनुभयो?" फ्लोमा प्रयोगकर्ताको
+    इमेलमा पठाइने एकपटके लिङ्कको आधार। सुरक्षाका लागि यसको म्याद
+    EmailVerificationToken (२४ घण्टा) भन्दा छोटो (१ घण्टा) राखिएको छ।
+    """
+
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="password_reset_tokens"
+    )
+    token = models.CharField(max_length=64, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "पासवर्ड रिसेट टोकन"
+        verbose_name_plural = "पासवर्ड रिसेट टोकनहरू"
+        ordering = ["-created_at"]
+
+    def is_valid(self):
+        from django.utils import timezone
+
+        return not self.is_used and self.expires_at > timezone.now()
+
+    def __str__(self):
+        return f"{self.user.username} — {'प्रयोग भयो' if self.is_used else 'बाँकी'}"
+
+
 class AuthEventLog(models.Model):
     """अथेन्टिकेशन प्रोटोकल लग — लगइन/लगआउट/2FA घटनाहरूको अडिट ट्रेल।"""
 

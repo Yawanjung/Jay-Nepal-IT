@@ -19,7 +19,13 @@ from django.db import transaction
 from django.utils import timezone
 
 from . import selectors
-from .models import AccessControlEntry, AuthEventLog, EmailVerificationToken, Profile
+from .models import (
+    AccessControlEntry,
+    AuthEventLog,
+    EmailVerificationToken,
+    PasswordResetToken,
+    Profile,
+)
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -251,3 +257,105 @@ def update_profile(*, user, **fields):
             setattr(profile, key, value)
     profile.save()
     return profile
+
+
+# =========================================================
+# पासवर्ड रिसेट ("पासवर्ड बिर्सनुभयो?") फ्लो
+# =========================================================
+PASSWORD_RESET_TOKEN_VALIDITY_HOURS = 1
+
+
+def _send_password_reset_email_background(*, user_id, email, token):
+    """verification इमेल जस्तै — background thread मा पठाउने, ताकि
+    forgot-password request तुरुन्तै फर्कोस्, SMTP/API ढिलो/असफल
+    भए पनि response कुर्नु नपरोस्।"""
+
+    def _run():
+        try:
+            user = User.objects.get(pk=user_id)
+            send_password_reset_email(user=user, token=token)
+        except Exception:
+            logger.exception(
+                "Password reset इमेल (background) पठाउन सकिएन (user id=%s, email=%s)",
+                user_id,
+                email,
+            )
+
+    threading.Thread(target=_run, daemon=True).start()
+
+
+def create_password_reset_token(*, user) -> PasswordResetToken:
+    token = secrets.token_urlsafe(32)
+    return PasswordResetToken.objects.create(
+        user=user,
+        token=token,
+        expires_at=timezone.now() + timedelta(hours=PASSWORD_RESET_TOKEN_VALIDITY_HOURS),
+    )
+
+
+def send_password_reset_email(*, user, token: str):
+    reset_link = f"{settings.FRONTEND_URL}/reset-password.html?token={token}"
+    subject = "Jay Nepal IT प्रविधि — पासवर्ड रिसेट अनुरोध"
+    message = (
+        f"नमस्ते {user.first_name or user.username},\n\n"
+        f"तपाईंको खाताको पासवर्ड रिसेट गर्ने अनुरोध प्राप्त भयो।\n"
+        f"कृपया तलको लिङ्कमा क्लिक गरेर नयाँ पासवर्ड राख्नुहोस्:\n\n"
+        f"{reset_link}\n\n"
+        f"यो लिङ्क {PASSWORD_RESET_TOKEN_VALIDITY_HOURS} घण्टासम्म मात्र मान्य हुन्छ।\n"
+        f"यदि तपाईंले यो अनुरोध गर्नुभएको होइन भने, यो इमेल बेवास्ता गर्नुहोस् — "
+        f"तपाईंको पासवर्ड बदलिने छैन।"
+    )
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
+
+
+def request_password_reset(*, email: str):
+    """User enumeration रोक्न, खाता भेटियोस् वा नभेटियोस्, यो function ले
+    सधैँ चुपचाप (silently) फर्कन्छ — view ले सधैँ उस्तै generic सन्देश दिन्छ।"""
+    user = User.objects.filter(email__iexact=email).first()
+    if user is None:
+        return
+
+    token = create_password_reset_token(user=user)
+    try:
+        _send_password_reset_email_background(user_id=user.id, email=user.email, token=token.token)
+    except Exception:
+        logger.exception(
+            "Password reset इमेल background मा पठाउन सकिएन (user id=%s, email=%s)",
+            user.id,
+            user.email,
+        )
+
+
+def reset_password(*, token: str, new_password: str) -> User:
+    """टोकन प्रमाणित गरेर नयाँ पासवर्ड राख्ने। पासवर्ड यहाँ पनि
+    validate_password() मार्फत नै जाँचिन्छ (signup जस्तै — कमजोर
+    पासवर्ड server-side मै रोकिन्छ)।"""
+    entry = PasswordResetToken.objects.filter(token=token).select_related("user").first()
+
+    if entry is None:
+        raise ValidationError("अमान्य वा प्रयोग भइसकेको लिङ्क।")
+    if not entry.is_valid():
+        raise ValidationError("यो लिङ्कको म्याद सकिएको छ। कृपया नयाँ लिङ्क माग्नुहोस्।")
+
+    validate_password(new_password, user=entry.user)
+
+    with transaction.atomic():
+        entry.user.set_password(new_password)
+        entry.user.save(update_fields=["password"])
+        entry.is_used = True
+        entry.save(update_fields=["is_used"])
+        # यो टोकनको मात्र होइन, यो प्रयोगकर्ताका अरू बाँकी (प्रयोग नभएका)
+        # reset token हरू पनि रद्द गर्ने — पुरानो इमेलमा भएको लिङ्क
+        # फेरि प्रयोग हुन नपाओस् भनेर।
+        PasswordResetToken.objects.filter(user=entry.user, is_used=False).exclude(pk=entry.pk).update(
+            is_used=True
+        )
+        AuthEventLog.objects.create(user=entry.user, event_type=AuthEventLog.EventType.PASSWORD_RESET)
+
+    return entry.user

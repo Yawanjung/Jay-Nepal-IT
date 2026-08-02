@@ -168,3 +168,61 @@ def resend_verification_view(request):
     return JsonResponse(
         {"ok": True, "message": "यदि यो खाता अवस्थित छ र अझै प्रमाणित छैन भने, प्रमाणीकरण इमेल पठाइयो।"}
     )
+
+
+@ratelimit(key='ip', rate=settings.SIGNUP_RATE_LIMIT, block=False)
+@require_http_methods(["POST"])
+@csrf_protect
+def forgot_password_view(request):
+    if getattr(request, "limited", False):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "धेरै पटक प्रयास भयो। कृपया केही मिनेटपछि फेरि प्रयास गर्नुहोस्।",
+                "error_code": "rate_limited",
+            },
+            status=429,
+        )
+
+    data = _parse_json(request)
+    email = data.get("email", "").strip()
+    if not email:
+        return JsonResponse({"ok": False, "error": "इमेल आवश्यक छ।"}, status=400)
+
+    try:
+        services.request_password_reset(email=email)
+    except Exception:
+        logger.exception("Forgot-password अनुरोध गर्दा अनपेक्षित त्रुटि (email=%s)", email)
+        # यहाँ पनि user enumeration रोक्न, त्रुटि भए पनि generic सफल सन्देश नै दिने
+
+    # User enumeration रोक्न — खाता भेटियोस् वा नभेटियोस्, सधैँ उस्तै सन्देश
+    return JsonResponse(
+        {
+            "ok": True,
+            "message": "यदि यो इमेलबाट खाता बनेको छ भने, पासवर्ड रिसेट लिङ्क पठाइयो।",
+        }
+    )
+
+
+@require_http_methods(["POST"])
+@csrf_protect
+def reset_password_view(request):
+    data = _parse_json(request)
+    token = data.get("token", "").strip()
+    new_password = data.get("password", "")
+
+    if not token or not new_password:
+        return JsonResponse({"ok": False, "error": "टोकन र नयाँ पासवर्ड दुवै आवश्यक छन्।"}, status=400)
+
+    try:
+        services.reset_password(token=token, new_password=new_password)
+    except ValidationError as exc:
+        return JsonResponse({"ok": False, "error": " ".join(exc.messages)}, status=400)
+    except Exception:
+        logger.exception("Password reset गर्दा अनपेक्षित त्रुटि")
+        return JsonResponse(
+            {"ok": False, "error": "server त्रुटि भयो। कृपया केही बेरपछि फेरि प्रयास गर्नुहोस्।"},
+            status=500,
+        )
+
+    return JsonResponse({"ok": True, "message": "पासवर्ड सफलतापूर्वक बदलियो। अब नयाँ पासवर्डले लगइन गर्नुहोस्।"})
