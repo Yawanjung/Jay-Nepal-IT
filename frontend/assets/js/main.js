@@ -232,6 +232,33 @@
           if (status) {
             status.dataset.state = "error";
             status.textContent = result.error || "लगइन असफल भयो। कृपया फेरि प्रयास गर्नुहोस्।";
+
+            // इमेल verify नभएकै कारण login असफल भएको हो भने, सिधै
+            // "फेरि इमेल पठाउनुहोस्" बटन देखाउने — user फेरि अलमलमा
+            // नपरोस् भनेर।
+            if (result.error_code === "email_not_verified") {
+              const resendBtn = document.createElement("button");
+              resendBtn.type = "button";
+              resendBtn.className = "btn btn-sm btn-outline-secondary mt-2";
+              resendBtn.textContent = "प्रमाणीकरण इमेल फेरि पठाउनुहोस्";
+              resendBtn.addEventListener("click", async function () {
+                resendBtn.disabled = true;
+                resendBtn.textContent = "पठाइँदैछ…";
+                try {
+                  await jnApiFetch("/accounts/resend-verification/", {
+                    method: "POST",
+                    body: JSON.stringify({ email: identifier.value.trim() }),
+                  });
+                  status.textContent =
+                    "यदि यो खाता अवस्थित छ भने, प्रमाणीकरण इमेल फेरि पठाइयो — Inbox/Spam जाँच्नुहोस्।";
+                } catch (err) {
+                  resendBtn.disabled = false;
+                  resendBtn.textContent = "प्रमाणीकरण इमेल फेरि पठाउनुहोस्";
+                }
+              });
+              status.appendChild(document.createElement("br"));
+              status.appendChild(resendBtn);
+            }
           }
           return;
         }
@@ -339,7 +366,8 @@
         form.reset();
         if (status) {
           status.dataset.state = "success";
-          status.textContent = "खाता सफलतापूर्वक बन्यो! अब माथिबाट लगइन गर्नुहोस्।";
+          status.textContent =
+            "खाता सफलतापूर्वक बन्यो! हामीले तपाईंको इमेलमा प्रमाणीकरण (verification) लिङ्क पठाएका छौं — कृपया Inbox (र Spam/Junk फोल्डर पनि) जाँच गरेर पहिले इमेल verify गर्नुहोस्, त्यसपछि मात्र लगइन गर्न मिल्छ।";
         }
       } catch (err) {
         if (status) {
